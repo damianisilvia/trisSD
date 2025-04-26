@@ -6,9 +6,9 @@ let currentPlayer = 'X';
 let gameState = ['', '', '', '', '', '', '', '', ''];
 let gameActive = true;
 
-//asd lol
-//Hello world
-//scherzavo sul fatto dell'ultimo commento
+// Variabili per le vittorie
+let playerXWins = 0;
+let playerOWins = 0;
 
 const winningConditions = [
     [0, 1, 2],
@@ -21,19 +21,27 @@ const winningConditions = [
     [2, 4, 6]
 ];
 
+// Funzione per aggiornare lo stato del gioco e il messaggio sotto i quadrati
+function updateStatus() {
+    statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
+}
+
 function handleCellClick(event) {
     const clickedCell = event.target;
     const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
 
     if (gameState[clickedCellIndex] !== '' || !gameActive) {
-        return;
+        return; // Se la cella è già occupata o il gioco è finito, non fare nulla
     }
 
     gameState[clickedCellIndex] = currentPlayer;
     clickedCell.textContent = currentPlayer;
 
     checkResult();
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    if (gameActive) {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Alterna il giocatore solo se il gioco è attivo
+        updateStatus(); // Aggiorna il messaggio sotto i quadrati
+    }
 }
 
 function checkResult() {
@@ -47,8 +55,14 @@ function checkResult() {
     }
 
     if (roundWon) {
+        if (currentPlayer === 'X') {
+            playerXWins++; // Aumenta vittoria di X
+        } else {
+            playerOWins++; // Aumenta vittoria di O
+        }
         statusDisplay.textContent = `Giocatore ${currentPlayer} ha vinto!`;
         gameActive = false;
+        updateStats(); // Aggiorna le statistiche
         return;
     }
 
@@ -58,20 +72,33 @@ function checkResult() {
         gameActive = false;
         return;
     }
-
-    statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
 }
 
 function handleReset() {
     gameState = ['', '', '', '', '', '', '', '', ''];
     gameActive = true;
     currentPlayer = 'X';
-    statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
+    updateStatus(); // Mostra il turno del giocatore X all'inizio
     cells.forEach(cell => cell.textContent = '');
+}
+
+function updateStats() {
+    // Salvataggio delle statistiche nel localStorage
+    localStorage.setItem('playerXWins', playerXWins);
+    localStorage.setItem('playerOWins', playerOWins);
+
+    // Mostra le statistiche
+    console.log(`Vittorie X: ${playerXWins}, Vittorie O: ${playerOWins}`);
 }
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 resetButton.addEventListener('click', handleReset);
 
-statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
+// Recupera le statistiche salvate dal localStorage (se esistono)
+if (localStorage.getItem('playerXWins')) {
+    playerXWins = parseInt(localStorage.getItem('playerXWins'));
+    playerOWins = parseInt(localStorage.getItem('playerOWins'));
+}
 
+// Prima di tutto, aggiorniamo lo stato per il primo turno
+updateStatus();
