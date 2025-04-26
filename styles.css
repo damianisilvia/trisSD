@@ -6,7 +6,8 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #e0f7fa;
-        /* celestino pastello */
+    /* celestino pastello */
+}
 
 .container {
     text-align: center;
@@ -14,24 +15,37 @@ body {
 
 .board {
     display: grid;
-    grid-template-columns: repeat(3, 200px);
-    grid-gap: 5px;
+    grid-template-columns: repeat(3, 120px);
+    /*messo 120px anziché 200px per avvicinarli un pò*/
+    grid-gap: 15px;
+    /* Aggiungiamo spazio tra le celle */
     margin-bottom: 20px;
 }
 
 .cell {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     background-color: #fff;
+    border: 2px solid #ccc;
+    /* Bordi sottili */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2em;
+    font-size: 2.5em;
     cursor: pointer;
+    border-radius: 12px;
+    /* Angoli arrotondati */
+    transition: all 0.3s ease;
+    /* Animazione dolce */
 }
 
+/* Effetto hover quando passi sopra una cella */
 .cell:hover {
-    background-color: #ddd;
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+    /* Alza il quadrato un po' */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Ombra morbida */
 }
 
 #resetButton {
