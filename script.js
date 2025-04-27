@@ -3,6 +3,10 @@ const cells = document.querySelectorAll('.cell');
 const resetButton = document.getElementById('resetButton');
 const statusDisplay = document.getElementById('status');
 const saveButton = document.getElementById('saveButton'); // (lo creiamo tra poco in HTML)
+let moveLog = []; // Array per salvare le mosse
+
+
+
 
 let currentPlayer = 'X';
 let gameState = ['', '', '', '', '', '', '', '', ''];
@@ -29,6 +33,7 @@ function updateStatus() {
     statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
 }
 
+/*modifico la funzione handCellClick per il log delle mosse */
 function handleCellClick(event) {
     const clickedCell = event.target;
     const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
@@ -39,6 +44,10 @@ function handleCellClick(event) {
 
     gameState[clickedCellIndex] = currentPlayer;
     clickedCell.textContent = currentPlayer;
+
+    // NUOVO: Salviamo la mossa
+    moveLog.push({ player: currentPlayer, cell: clickedCellIndex });
+    updateMoveLog(); // Aggiorna la visualizzazione del log
 
     checkResult();
     if (gameActive) {
@@ -85,6 +94,8 @@ function handleReset() {
     currentPlayer = 'X';
     updateStatus();
     cells.forEach(cell => cell.textContent = '');
+    moveLog = []; //  Reset anche il log delle mosse
+    updateMoveLog(); //  E aggiorna a schermo
 }
 
 // ✅ Funzione UNICA per aggiornare e salvare le statistiche
@@ -129,3 +140,13 @@ clearStatsButton.addEventListener('click', () => {
     updateStats();
     alert("Statistiche azzerate!");
 });
+function updateMoveLog() {
+    const moveLogElement = document.getElementById('move-log');
+    moveLogElement.innerHTML = ''; // Pulisce la lista
+
+    moveLog.forEach((move, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${move.player} ha cliccato sulla cella ${move.cell}`;
+        moveLogElement.appendChild(li);
+    });
+}
