@@ -4,7 +4,19 @@ const resetButton = document.getElementById('resetButton');
 const statusDisplay = document.getElementById('status');
 const saveButton = document.getElementById('saveButton'); // (lo creiamo tra poco in HTML)
 let moveLog = []; // Array per salvare le mosse
+// Variabili per i simboli personalizzati
+let customX = '😸'; // simbolo di default, gattino
+let customO = '🌞'; // simbolo di default, sole
 
+// Funzione per applicare i simboli personalizzati
+document.getElementById('apply-symbols').addEventListener('click', () => {
+    customX = document.getElementById('symbol-x').value || '😸';
+    customO = document.getElementById('symbol-o').value || '🌞';
+    currentPlayer = 'X'; // Riniziamo con X
+    gameState = ['', '', '', '', '', '', '', '', '']; // Reset del gioco
+    cells.forEach(cell => cell.textContent = ''); // Pulisci le celle
+    updateStatus();
+});
 
 
 
@@ -34,6 +46,7 @@ function updateStatus() {
 }
 
 /*modifico la funzione handCellClick per il log delle mosse */
+// Modifica la funzione handleCellClick per usare i simboli personalizzati
 function handleCellClick(event) {
     const clickedCell = event.target;
     const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
@@ -43,11 +56,12 @@ function handleCellClick(event) {
     }
 
     gameState[clickedCellIndex] = currentPlayer;
-    clickedCell.textContent = currentPlayer;
+    clickedCell.textContent = currentPlayer === 'X' ? customX : customO;
 
     // NUOVO: Salviamo la mossa
+    // Salva la mossa
     moveLog.push({ player: currentPlayer, cell: clickedCellIndex });
-    updateMoveLog(); // Aggiorna la visualizzazione del log
+    updateMoveLog();
 
     checkResult();
     if (gameActive) {
