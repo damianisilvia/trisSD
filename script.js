@@ -2,14 +2,18 @@ const board = document.getElementById('board');
 const cells = document.querySelectorAll('.cell');
 const resetButton = document.getElementById('resetButton');
 const statusDisplay = document.getElementById('status');
+const saveButton = document.getElementById('saveButton'); // (lo creiamo tra poco in HTML)
+
 let currentPlayer = 'X';
 let gameState = ['', '', '', '', '', '', '', '', ''];
 let gameActive = true;
 
-// Variabili per le vittorie
+// Variabili per le statistiche
 let playerXWins = 0;
 let playerOWins = 0;
+let draws = 0;
 
+// Condizioni di vittoria
 const winningConditions = [
     [0, 1, 2],
     [3, 4, 5],
@@ -21,7 +25,6 @@ const winningConditions = [
     [2, 4, 6]
 ];
 
-// Funzione per aggiornare lo stato del gioco e il messaggio sotto i quadrati
 function updateStatus() {
     statusDisplay.textContent = `Turno del giocatore ${currentPlayer}`;
 }
@@ -31,7 +34,7 @@ function handleCellClick(event) {
     const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
 
     if (gameState[clickedCellIndex] !== '' || !gameActive) {
-        return; // Se la cella è già occupata o il gioco è finito, non fare nulla
+        return;
     }
 
     gameState[clickedCellIndex] = currentPlayer;
@@ -39,8 +42,8 @@ function handleCellClick(event) {
 
     checkResult();
     if (gameActive) {
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Alterna il giocatore solo se il gioco è attivo
-        updateStatus(); // Aggiorna il messaggio sotto i quadrati
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        updateStatus();
     }
 }
 
@@ -56,20 +59,22 @@ function checkResult() {
 
     if (roundWon) {
         if (currentPlayer === 'X') {
-            playerXWins++; // Aumenta vittoria di X
+            playerXWins++;
         } else {
-            playerOWins++; // Aumenta vittoria di O
+            playerOWins++;
         }
         statusDisplay.textContent = `Giocatore ${currentPlayer} ha vinto!`;
         gameActive = false;
-        updateStats(); // Aggiorna le statistiche
+        updateStats();
         return;
     }
 
     const roundDraw = !gameState.includes('');
     if (roundDraw) {
+        draws++;
         statusDisplay.textContent = 'Pareggio!';
         gameActive = false;
+        updateStats();
         return;
     }
 }
@@ -78,27 +83,39 @@ function handleReset() {
     gameState = ['', '', '', '', '', '', '', '', ''];
     gameActive = true;
     currentPlayer = 'X';
-    updateStatus(); // Mostra il turno del giocatore X all'inizio
+    updateStatus();
     cells.forEach(cell => cell.textContent = '');
 }
 
+// ✅ Funzione UNICA per aggiornare e salvare le statistiche
 function updateStats() {
-    // Salvataggio delle statistiche nel localStorage
+    document.getElementById('player-x-wins').textContent = playerXWins;
+    document.getElementById('player-o-wins').textContent = playerOWins;
+    document.getElementById('draws').textContent = draws;
+}
+
+function saveStats() {
     localStorage.setItem('playerXWins', playerXWins);
     localStorage.setItem('playerOWins', playerOWins);
-
-    // Mostra le statistiche
-    console.log(`Vittorie X: ${playerXWins}, Vittorie O: ${playerOWins}`);
+    localStorage.setItem('draws', draws);
+    alert("Statistiche salvate!");
 }
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 resetButton.addEventListener('click', handleReset);
+saveButton.addEventListener('click', saveStats);
 
-// Recupera le statistiche salvate dal localStorage (se esistono)
+// ✅ Recuperiamo anche i pareggi salvati
 if (localStorage.getItem('playerXWins')) {
     playerXWins = parseInt(localStorage.getItem('playerXWins'));
+}
+if (localStorage.getItem('playerOWins')) {
     playerOWins = parseInt(localStorage.getItem('playerOWins'));
 }
+if (localStorage.getItem('draws')) {
+    draws = parseInt(localStorage.getItem('draws'));
+}
 
-// Prima di tutto, aggiorniamo lo stato per il primo turno
+// Mostriamo le statistiche appena parte il gioco
+updateStats();
 updateStatus();
