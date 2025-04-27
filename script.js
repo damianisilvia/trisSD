@@ -119,3 +119,13 @@ if (localStorage.getItem('draws')) {
 // Mostriamo le statistiche appena parte il gioco
 updateStats();
 updateStatus();
+
+const clearStatsButton = document.getElementById('clearStatsButton');
+clearStatsButton.addEventListener('click', () => {
+    localStorage.clear();
+    playerXWins = 0;
+    playerOWins = 0;
+    draws = 0;
+    updateStats();
+    alert("Statistiche azzerate!");
+});
