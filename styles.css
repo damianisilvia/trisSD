@@ -87,7 +87,11 @@ body {
     color: #0077b6;
     /* Colore carino per i numeri */
 }
-
+/* Classe per evidenziare la cella collegata al log */
+.cell.highlighted {
+    background-color: #ffff99;
+    /* giallo chiaro */
+}
 @media (max-width: 600px) {
     .cell {
         font-size: 1.5rem;

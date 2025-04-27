@@ -140,13 +140,34 @@ clearStatsButton.addEventListener('click', () => {
     updateStats();
     alert("Statistiche azzerate!");
 });
+
+
 function updateMoveLog() {
     const moveLogElement = document.getElementById('move-log');
-    moveLogElement.innerHTML = ''; // Pulisce la lista
+    moveLogElement.innerHTML = '';
 
     moveLog.forEach((move, index) => {
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${move.player} ha cliccato sulla cella ${move.cell}`;
+        li.dataset.cellIndex = move.cell;
+
+        li.addEventListener('mouseover', (e) => {
+            const cellIndex = e.target.dataset.cellIndex;
+            const cell = document.querySelector(`.cell[data-index="${cellIndex}"]`);
+            if (cell) {
+                cell.classList.add('highlighted'); // 👈 aggiungiamo la classe
+            }
+        });
+
+        li.addEventListener('mouseout', (e) => {
+            const cellIndex = e.target.dataset.cellIndex;
+            const cell = document.querySelector(`.cell[data-index="${cellIndex}"]`);
+            if (cell) {
+                cell.classList.remove('highlighted'); // 👈 togliamo la classe
+            }
+        });
+
         moveLogElement.appendChild(li);
     });
 }
+
