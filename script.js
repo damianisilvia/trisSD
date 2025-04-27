@@ -72,10 +72,14 @@ function handleCellClick(event) {
 
 function checkResult() {
     let roundWon = false;
+    let winningCombination = [];
+
     for (let i = 0; i < winningConditions.length; i++) {
         const [a, b, c] = winningConditions[i];
+
         if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
             roundWon = true;
+            winningCombination = [a, b, c]; // Salviamo l'indice delle celle vincenti
             break;
         }
     }
@@ -87,6 +91,10 @@ function checkResult() {
             playerOWins++;
         }
         statusDisplay.textContent = `Giocatore ${currentPlayer} ha vinto!`;
+
+        // Evidenziamo le celle vincenti
+        highlightWinningCells(winningCombination);
+
         gameActive = false;
         updateStats();
         return;
@@ -101,7 +109,23 @@ function checkResult() {
         return;
     }
 }
+// Funzione per evidenziare le celle vincenti
+function highlightWinningCells(cellsToHighlight) {
+    cellsToHighlight.forEach(index => {
+        const winningCell = document.querySelector(`.cell[data-index="${index}"]`);
+        if (winningCell) {
+            winningCell.classList.add('winning-cell'); // Aggiungiamo la classe di evidenza
+        }
+    });
+}
 
+// Funzione per rimuovere l'evidenziazione quando il gioco viene resettato
+function resetHighlighting() {
+    const winningCells = document.querySelectorAll('.cell');
+    winningCells.forEach(cell => {
+        cell.classList.remove('winning-cell');
+    });
+}
 function handleReset() {
     gameState = ['', '', '', '', '', '', '', '', ''];
     gameActive = true;
@@ -110,9 +134,9 @@ function handleReset() {
     cells.forEach(cell => cell.textContent = '');
     moveLog = []; //  Reset anche il log delle mosse
     updateMoveLog(); //  E aggiorna a schermo
+    resetHighlighting(); // Rimuove l'evidenziazione
 }
-
-// ✅ Funzione UNICA per aggiornare e salvare le statistiche
+//  Funzione UNICA per aggiornare e salvare le statistiche
 function updateStats() {
     document.getElementById('player-x-wins').textContent = playerXWins;
     document.getElementById('player-o-wins').textContent = playerOWins;

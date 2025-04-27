@@ -92,6 +92,18 @@ body {
     background-color: #ffff99;
     /* giallo chiaro */
 }
+
+
+
+/* Evidenziazione della combinazione vincente */
+.winning-cell {
+    background-color: #28a745 !important;
+    /* Verde brillante */
+    transform: scale(1.2);
+    /* Un piccolo ingrandimento per farle risaltare */
+    box-shadow: 0 4px 12px rgba(0, 255, 0, 0.5);
+    /* Ombra verde per un effetto più stiloso */
+}
 @media (max-width: 600px) {
     .cell {
         font-size: 1.5rem;
